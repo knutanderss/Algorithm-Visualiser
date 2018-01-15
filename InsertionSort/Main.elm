@@ -9,7 +9,6 @@ import Array as A
 import Process
 import Time exposing (Time)
 import Task
-import Debug
 import Array.Extra as AE
 import Sort exposing (..)
 import Animation
@@ -33,6 +32,7 @@ main =
 type alias Model =
     { array : A.Array Element
     , steps : List ArrayAnimation
+    , history : List ArrayAnimation
     , playing : Bool
     }
 
@@ -67,7 +67,8 @@ defaultArray =
 init : ( Model, Cmd Msg )
 init =
     { array = constructArray <| defaultArray
-    , steps = Debug.log "steps: " <| animToSteps <| sort defaultArray
+    , steps = animToSteps <| sort defaultArray
+    , history = []
     , playing = False
     }
         ! []
@@ -80,7 +81,8 @@ init =
 type Msg
     = NextStep
     | StartClicked
-    | TestClicked
+    | StepBackward
+    | StepForward
     | Animate Int Animation.Msg
 
 
@@ -88,49 +90,50 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         NextStep ->
-            case Debug.log "" <| model.steps of
+            (case model.steps of
+                [] ->
+                    model
+
+                animation :: xs ->
+                    step animation model
+                        |> forwardTimeline animation xs
+            )
+                ! if model.playing then
+                    [ delayAndStepNext ]
+                  else
+                    []
+
+        StartClicked ->
+            (case model.playing of
+                False ->
+                    { model | playing = True }
+                        ! [ delayAndStepNext ]
+
+                True ->
+                    { model | playing = False }
+                        ! []
+            )
+
+        StepBackward ->
+            (case model.history of
+                [] ->
+                    model
+
+                animation :: xs ->
+                    step (flipStep animation) model
+                        |> backwardTimeline animation xs
+            )
+                ! []
+
+        StepForward ->
+            case model.steps of
                 [] ->
                     model ! []
 
-                (Exchange a b) :: xs ->
-                    { model
-                        | array = stepExchange a b model.array
-                        , steps = xs
-                    }
-                        ! if model.playing then
-                            [ delayAndStepNext ]
-                          else
-                            []
-
-                (LookAt i) :: xs ->
-                    { model
-                        | array = setStatusInArray LookedAt i model.array
-                        , steps = xs
-                    }
-                        ! if model.playing then
-                            [ delayAndStepNext ]
-                          else
-                            []
-
-                (UnlookAt i) :: xs ->
-                    { model
-                        | array = setStatusInArray Normal i model.array
-                        , steps = xs
-                    }
-                        ! if model.playing then
-                            [ delayAndStepNext ]
-                          else
-                            []
-
-        StartClicked ->
-            -- TODO: Don't start if already started
-            { model
-                | playing = not model.playing
-            }
-                ! [ delayAndStepNext ]
-
-        TestClicked ->
-            model ! []
+                animation :: xs ->
+                    step animation model
+                        |> forwardTimeline animation xs
+                        |> flip (!) []
 
         Animate index animMsg ->
             { model
@@ -140,6 +143,54 @@ update msg model =
                         |> (\e -> A.set index e model.array)
             }
                 ! []
+
+
+step : ArrayAnimation -> Model -> Model
+step animation model =
+    case animation of
+        Exchange a b ->
+            { model
+                | array = stepExchange a b model.array
+            }
+
+        LookAt i ->
+            { model
+                | array = setStatusInArray LookedAt i model.array
+            }
+
+        UnlookAt i ->
+            { model
+                | array = setStatusInArray Normal i model.array
+            }
+
+
+flipStep : ArrayAnimation -> ArrayAnimation
+flipStep animation =
+    case animation of
+        Exchange a b ->
+            Exchange b a
+
+        LookAt i ->
+            UnlookAt i
+
+        UnlookAt i ->
+            LookAt i
+
+
+forwardTimeline : ArrayAnimation -> List ArrayAnimation -> Model -> Model
+forwardTimeline currentAnim rest model =
+    { model
+        | steps = rest
+        , history = currentAnim :: model.history
+    }
+
+
+backwardTimeline : ArrayAnimation -> List ArrayAnimation -> Model -> Model
+backwardTimeline currentAnim prevAnims model =
+    { model
+        | steps = currentAnim :: model.steps
+        , history = prevAnims
+    }
 
 
 statusToColor : ElementStatus -> String
@@ -261,7 +312,8 @@ view model =
                         "Start"
                     )
                 ]
-            , button [ onClick TestClicked ] [ Html.text "Test" ]
+            , button [ class "blue-button", onClick StepBackward ] [ Html.text "<<" ]
+            , button [ class "blue-button", onClick StepForward ] [ Html.text ">>" ]
             ]
         ]
 
@@ -301,7 +353,7 @@ constructArray numbers =
         colorList =
             List.repeat l Normal
     in
-        List.map4 Element numbers indices (second (Debug.log "styles" ( List.length styles, styles ))) colorList
+        List.map4 Element numbers indices styles colorList
             |> A.fromList
 
 

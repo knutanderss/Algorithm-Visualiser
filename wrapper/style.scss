@@ -55,7 +55,7 @@ nav > div {
 }
 
 header {
-  height: 7rem;
+  height: 1rem;
   background: #eae6e2;
   display: flex;
   align-items: center;
@@ -63,6 +63,20 @@ header {
   border-bottom: solid 3px #606060;
 }
 
+header.active {
+  height: 7rem;
+  transition: all 0.3s;
+}
+
+header h1 {
+  opacity: 0;
+}
+
+header h1.active {
+  opacity: 1;
+  transition: opacity 0.5s;
+  transition-delay: 0.3s;
+}
 
 
 footer {
@@ -75,10 +89,31 @@ footer {
   left: 0;
 }
 
+#choose-algorithm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#choose-algorithm.inactive {
+  opacity: 0;
+  transition: all 0.3s;
+}
+
 #content-wrapper {
   margin: 140px auto;
-  width: 90%
+  width: 90%;
+  opacity: 0;
 }
+
+#content-wrapper.active {
+  opacity: 1;
+  transition: all 0.5s;
+  transition-delay: 0.3s;
+}
+
+
 
 #content-wrapper svg {
   display: block;
@@ -88,10 +123,11 @@ footer {
 .buttons {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-top: 60px;
 }
 
-.buttons button {
+.buttons button, #choose-algorithm button {
   display: block;
   color: #cf3c3a;
   border: 2px solid #cf3c3a;
@@ -103,26 +139,32 @@ footer {
   font-family: "myriad-pro", Verdana, Tahoma, "DejaVu Sans", sans-serif;
   background-color: transparent;
   text-decoration: none;
-  min-width: 200px;
+  width: 200px;
   margin-left: 20px;
+  margin-top: 20px;
 }
 
-.buttons button:nth-child(2n) {
+.buttons button.blue-button  {
   color: #0da6a3;
   border: 2px solid #0da6a3;
+  min-width: 100px;
 }
 
-.buttons button:hover {
+.buttons button:hover, #choose-algorithm button:hover {
   text-decoration: none;
   background-color: #cf3c3a;
   color: #fff;
   transition: all 0.3s;
 }
 
-.buttons button:nth-child(2n):hover {
+.buttons button.blue-button:hover {
   background-color: #0da6a3;
 }
 
 .buttons button:first-child {
   margin-left: 0;
+}
+
+#choose-algorithm.hidden {
+  display: none;
 }

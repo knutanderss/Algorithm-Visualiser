@@ -18946,7 +18946,8 @@ var _user$project$Main$subscriptions = function (model) {
 				0,
 				_elm_lang$core$Array$length(model.array) - 1)));
 };
-var _user$project$Main$TestClicked = {ctor: 'TestClicked'};
+var _user$project$Main$StepForward = {ctor: 'StepForward'};
+var _user$project$Main$StepBackward = {ctor: 'StepBackward'};
 var _user$project$Main$StartClicked = {ctor: 'StartClicked'};
 var _user$project$Main$view = function (model) {
 	return A2(
@@ -18999,15 +19000,30 @@ var _user$project$Main$view = function (model) {
 								_elm_lang$html$Html$button,
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$TestClicked),
+									_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$StepBackward),
 									_1: {ctor: '[]'}
 								},
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html$text('Test'),
+									_0: _elm_lang$html$Html$text('<<'),
 									_1: {ctor: '[]'}
 								}),
-							_1: {ctor: '[]'}
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$button,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$StepForward),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('>>'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
 						}
 					}),
 				_1: {ctor: '[]'}
@@ -19084,7 +19100,12 @@ var _user$project$Main$update = F2(
 						_0: _user$project$Main$delayAndStepNext,
 						_1: {ctor: '[]'}
 					});
-			case 'TestClicked':
+			case 'StepBackward':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					{ctor: '[]'});
+			case 'StepForward':
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					model,
@@ -19112,7 +19133,7 @@ var _user$project$Main$main = _elm_lang$html$Html$program(
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Animation.Model.Tick":{"args":[],"tags":{"Tick":["Time.Time"]}},"Main.Msg":{"args":[],"tags":{"TestClicked":[],"StartClicked":[],"NextStep":[],"Animate":["Int","Animation.Msg"]}}},"aliases":{"Time.Time":{"args":[],"type":"Float"},"Animation.Msg":{"args":[],"type":"Animation.Model.Tick"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Animation.Model.Tick":{"args":[],"tags":{"Tick":["Time.Time"]}},"Main.Msg":{"args":[],"tags":{"StartClicked":[],"NextStep":[],"Animate":["Int","Animation.Msg"],"StepForward":[],"StepBackward":[]}}},"aliases":{"Time.Time":{"args":[],"type":"Float"},"Animation.Msg":{"args":[],"type":"Animation.Model.Tick"}},"message":"Main.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

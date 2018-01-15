@@ -21,7 +21,7 @@ sort =
 
 sort_ : Int -> Animator (A.Array Int) ArrayAnimation -> Animator (A.Array Int) ArrayAnimation
 sort_ index ((Animator ( array, steps )) as animator) =
-    if Debug.log "" (index < A.length array) then
+    if index < A.length array then
         let
             animUpdated =
                 Animator ( array, steps ++ [ LookAt index ] )
