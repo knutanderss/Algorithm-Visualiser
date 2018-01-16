@@ -2,9 +2,6 @@
 require( './styles/main.scss' );
 
 // pull in scripts
-var init = require('./init')
+var init = require('./init');
+var runAllAlgorithms = require('./js/initAllAlgorithms');
 window.startInsertionSort = init.startInsertionSort;
-
-// inject bundled Elm app into div#content-wrapper
-var Elm = require( '../elm/Main' );
-Elm.Main.embed( document.getElementById( 'content-wrapper' ) );

@@ -1,4 +1,4 @@
-export function setHeader(title) {
+function setHeader(title) {
   var header = document.getElementsByTagName('header')[0];
   var h1 = document.getElementById('algorithm-name');
   h1.textContent = title;
@@ -6,7 +6,7 @@ export function setHeader(title) {
   h1.classList.add('active');
 }
 
-export function hideMenu() {
+function hideMenu() {
   var menu = document.getElementById('choose-algorithm');
   menu.classList.add('inactive');
   setTimeout(function () {
@@ -14,7 +14,7 @@ export function hideMenu() {
   }, 300);
 }
 
-export function showMenu() {
+function showMenu() {
   setTimeout(function () {
     menu.classList.remove('hidden');
     var menu = document.getElementById('choose-algorithm');
@@ -22,13 +22,17 @@ export function showMenu() {
   }, 300);
 }
 
-export function startAlgorithm(title) {
-  setHeader(title);
-  hideMenu();
-  var contentWrapper = document.getElementById('content-wrapper');
-  contentWrapper.classList.add('active');
+export function startAlgorithm(title, id) {
+  return function (mouseEvent) {
+    setHeader(title);
+    hideMenu();
+    var algDiv = document.getElementById(id);
+    setTimeout(function () {
+      algDiv.classList.remove('inactive');
+    }, 400);
+  }
 }
 
-export function startInsertionSort() {
+function startInsertionSort() {
   startAlgorithm('Insertion Sort');
 }

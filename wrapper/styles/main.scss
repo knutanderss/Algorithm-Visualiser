@@ -90,6 +90,7 @@ footer {
   right: 0;
   bottom: 0px;
   left: 0;
+  z-index: -10;
 }
 
 #choose-algorithm {
@@ -107,16 +108,11 @@ footer {
 #content-wrapper {
   margin: 140px auto;
   width: 90%;
-  opacity: 0;
 }
 
-#content-wrapper.active {
-  opacity: 1;
-  transition: all 0.5s;
-  transition-delay: 0.3s;
+#content-wrapper div.inactive {
+  display: none;
 }
-
-
 
 #content-wrapper svg {
   display: block;

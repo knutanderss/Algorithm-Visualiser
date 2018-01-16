@@ -1,17 +1,8 @@
-module Sort exposing (sort, animToSteps, Animator(..), ArrayAnimation(..))
+module InsertionSort exposing (sort, animToSteps, Animator(..), ArrayAnimation(..))
 
 import Array as A
 import Array.Extra as AE
-
-
-type Animator a b
-    = Animator ( a, List b )
-
-
-type ArrayAnimation
-    = Exchange Int Int
-    | LookAt Int
-    | UnlookAt Int
+import Svg.ArrayAnimation exposing (..)
 
 
 sort : List Int -> Animator (A.Array Int) ArrayAnimation
