@@ -16,7 +16,7 @@ const isDev = TARGET_ENV == dev;
 const isProd = TARGET_ENV == prod;
 
 // entry and output path/filename variables
-const entryPath = path.join(__dirname, 'src/static/index.js');
+const entryPath = path.join(__dirname, 'wrapper/index.js');
 const outputPath = path.join(__dirname, 'dist');
 const outputFilename = isProd ? '[name]-[hash].js' : '[name].js'
 
@@ -46,7 +46,7 @@ var commonConfig = {
             }
         }),
         new HtmlWebpackPlugin({
-            template: 'src/static/index.html',
+            template: 'wrapper/index.html',
             inject: 'body',
             filename: 'index.html'
         })
@@ -63,7 +63,7 @@ if (isDev === true) {
         devServer: {
             // serve index.html in place of 404 responses
             historyApiFallback: true,
-            contentBase: './src',
+            contentBase: './wrapper',
             hot: true
         },
         module: {

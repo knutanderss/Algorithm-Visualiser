@@ -5,3 +5,7 @@ repl-temp-*
 
 # Adobe Illustration
 *.ai
+
+# node
+node_modules
+*-lock.json

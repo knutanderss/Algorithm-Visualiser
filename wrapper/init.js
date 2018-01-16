@@ -1,7 +1,4 @@
-// Import CSS
-require( './style.scss' );
-
-function setHeader(title) {
+export function setHeader(title) {
   var header = document.getElementsByTagName('header')[0];
   var h1 = document.getElementById('algorithm-name');
   h1.textContent = title;
@@ -9,7 +6,7 @@ function setHeader(title) {
   h1.classList.add('active');
 }
 
-function hideMenu() {
+export function hideMenu() {
   var menu = document.getElementById('choose-algorithm');
   menu.classList.add('inactive');
   setTimeout(function () {
@@ -17,7 +14,7 @@ function hideMenu() {
   }, 300);
 }
 
-function showMenu() {
+export function showMenu() {
   setTimeout(function () {
     menu.classList.remove('hidden');
     var menu = document.getElementById('choose-algorithm');
@@ -25,14 +22,13 @@ function showMenu() {
   }, 300);
 }
 
-function startAlgorithm(title, appCB) {
+export function startAlgorithm(title) {
   setHeader(title);
   hideMenu();
   var contentWrapper = document.getElementById('content-wrapper');
-  var app = appCB(contentWrapper);
   contentWrapper.classList.add('active');
 }
 
-function startInsertionSort() {
-  startAlgorithm('Insertion Sort', Elm.Main.embed);
+export function startInsertionSort() {
+  startAlgorithm('Insertion Sort');
 }
