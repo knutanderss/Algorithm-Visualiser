@@ -5,7 +5,6 @@ const buttons = document.getElementById('choose-algorithm');
 
 for (var i=0; i < algorithms.length; i++) {
   const title = algorithms[i].title;
-  console.log(title);
   const id = title.replace(' ', '');
 
   const algDiv = document.createElement('div');
@@ -19,5 +18,5 @@ for (var i=0; i < algorithms.length; i++) {
   algButton.onclick = require('../init.js').startAlgorithm(title, id);
   buttons.appendChild(algButton);
 
-  algorithms[0].start(document.getElementById(id));
+  algorithms[i].start(document.getElementById(id));
 }

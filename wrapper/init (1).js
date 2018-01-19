@@ -1,3 +1,5 @@
+// Import CSS
+
 function setHeader(title) {
   var header = document.getElementsByTagName('header')[0];
   var h1 = document.getElementById('algorithm-name');
@@ -22,13 +24,14 @@ function showMenu() {
   }, 300);
 }
 
-export function startAlgorithm(title, id) {
-  return function (mouseEvent) {
-    setHeader(title);
-    hideMenu();
-    var algDiv = document.getElementById(id);
-    setTimeout(function () {
-      algDiv.classList.remove('inactive');
-    }, 400);
-  }
+function startAlgorithm(title, appCB) {
+  setHeader(title);
+  hideMenu();
+  var contentWrapper = document.getElementById('content-wrapper');
+  var app = appCB(contentWrapper);
+  contentWrapper.classList.add('active');
+}
+
+function startInsertionSort() {
+  startAlgorithm('Insertion Sort', Elm.Main.embed);
 }

@@ -2,7 +2,7 @@ module Types exposing (..)
 
 import Array
 import Animation
-import Svg.ArrayTypes exposing (ArrayAnimation)
+import SvgArray.Types exposing (ArrayAnimation, Animator)
 
 
 type Msg
@@ -11,6 +11,7 @@ type Msg
     | StepBackward
     | StepForward
     | Animate Int Animation.Msg
+    | ArrayGenerated SortingAlgorithm (List Int)
 
 
 type alias Model =
@@ -32,3 +33,6 @@ type alias Element =
 type ElementStatus
     = Normal
     | LookedAt
+
+type alias SortingAlgorithm =
+    List Int -> Animator (Array.Array Int) ArrayAnimation

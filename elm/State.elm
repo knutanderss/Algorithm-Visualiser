@@ -1,15 +1,19 @@
 module State exposing (..)
 
 import SvgArray.State
+import Types exposing (..)
 
 
-init =
-    SvgArray.State.init
+init : SortingAlgorithm -> ( Model, Cmd Msg )
+init alg =
+    SvgArray.State.init alg
 
 
+update : Msg -> Model -> ( Model, Cmd Msg )
 update =
     SvgArray.State.update
 
 
-subscription =
-    SvgArray.State.subscription
+subscriptions : Types.Model -> Sub Types.Msg
+subscriptions =
+    SvgArray.State.subscriptions

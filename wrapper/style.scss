@@ -1,12 +1,9 @@
-
-// can add Boostrap overrides, additional Sass/CSS below...
-
-// Color Scheme
-$Red: #CF3E3A;
-$Green: #2EA336;
-$Yellow: #CFB63A;
-$Blue: #0da6a3;
-$Grey: #333;
+/* Color Scheme
+ *    Red: #CF3E3A
+ *    Green: #2EA336
+ *    Yellow: #CFB63A
+ *    Blue: #0da6a3
+*/
 
 html {
   height: 100%;
@@ -20,7 +17,7 @@ body {
 
 h1 {
   margin: 0;
-  color: $Grey;
+  color: #333;
   font-size: 2.8125em;
   letter-spacing: 0.25rem;
   font-family: "adobe-garamond-pro", "Times New Roman", Times, Georgia, "DejaVu Serif", serif;
@@ -30,7 +27,7 @@ h1 {
 }
 
 nav {
-  background: $Red;
+  background: #cf3c3a;
   width: 100%;
 }
 
@@ -81,20 +78,15 @@ header h1.active {
   transition-delay: 0.3s;
 }
 
-header :first-child {
-  margin-right: 30px;
-}
-
 
 footer {
   width: 100%;
   height: 41px;
-  background: $Red;
+  background: #cf3c3a;
   position: absolute;
   right: 0;
   bottom: 0px;
   left: 0;
-  z-index: -10;
 }
 
 #choose-algorithm {
@@ -112,11 +104,16 @@ footer {
 #content-wrapper {
   margin: 140px auto;
   width: 90%;
+  opacity: 0;
 }
 
-#content-wrapper div.inactive {
-  display: none;
+#content-wrapper.active {
+  opacity: 1;
+  transition: all 0.5s;
+  transition-delay: 0.3s;
 }
+
+
 
 #content-wrapper svg {
   display: block;
@@ -132,8 +129,8 @@ footer {
 
 .buttons button, #choose-algorithm button {
   display: block;
-  color: $Red;
-  border: 2px solid $Red;
+  color: #cf3c3a;
+  border: 2px solid #cf3c3a;
   height: 45px;
   padding: 7px 0;
   text-align: center;

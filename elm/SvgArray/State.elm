@@ -1,5 +1,16 @@
 module SvgArray.State exposing (..)
 
+import Types exposing (..)
+import SvgArray.Types exposing (..)
+import SvgArray.View
+import Array
+import Array.Extra as ArrayExtra
+import Animation
+import Task
+import Process
+import Time
+import Random
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -19,7 +30,7 @@ update msg model =
                     []
 
         StartClicked ->
-            (case model.playing of
+            case model.playing of
                 False ->
                     { model | playing = True }
                         ! [ delayAndStepNext ]
@@ -27,7 +38,6 @@ update msg model =
                 True ->
                     { model | playing = False }
                         ! []
-            )
 
         StepBackward ->
             (case model.history of
@@ -50,14 +60,17 @@ update msg model =
                         |> forwardTimeline animation xs
                         |> flip (!) []
 
-        Animate index animMsg ->
+        Types.Animate index animMsg ->
             { model
                 | array =
-                    AE.getUnsafe index model.array
+                    ArrayExtra.getUnsafe index model.array
                         |> updatePosition animMsg
-                        |> (\e -> A.set index e model.array)
+                        |> (\e -> Array.set index e model.array)
             }
                 ! []
+
+        ArrayGenerated alg list ->
+            init_ alg list
 
 
 step : ArrayAnimation -> Model -> Model
@@ -92,21 +105,21 @@ flipStep animation =
             LookAt i
 
 
-stepExchange : Int -> Int -> A.Array Element -> A.Array Element
+stepExchange : Int -> Int -> Array.Array Element -> Array.Array Element
 stepExchange i1 i2 array =
     let
         e1 =
-            AE.getUnsafe i1 array
+            ArrayExtra.getUnsafe i1 array
 
         e2 =
-            AE.getUnsafe i2 array
+            ArrayExtra.getUnsafe i2 array
     in
         { e2 | index = i1 }
             |> updatePositionAnimation
-            |> (\e -> A.set i1 e array)
+            |> (\e -> Array.set i1 e array)
             |> ({ e1 | index = i2 }
                     |> updatePositionAnimation
-                    |> \e -> A.set i2 e
+                    |> \e -> Array.set i2 e
                )
 
 
@@ -127,18 +140,11 @@ updatePositionAnimation e =
     }
 
 
-intBox : Element -> Html Msg
-intBox e =
-    g (Animation.render e.position)
-        [ rect [ x "0", y "0", width "100", height "100", rx "15", ry "15", fill (statusToColor e.status) ] []
-        , rect [ x "5", y "5", width "90", height "90", rx "10", ry "10", fill "#fff" ] []
-        , text_ [ x "50", y "73", textAnchor "middle", fontSize "70px" ] [ Svg.text (toString (e.value)) ]
-        ]
-
-
 calculateX : Int -> Int
 calculateX =
-    ((*) 120)
+    SvgArray.View.boxSize
+    + SvgArray.View.boxSpace
+    |> (*)
 
 
 calculateY : ElementStatus -> Int
@@ -161,14 +167,23 @@ updatePosition msg element =
     { element | position = Animation.update msg element.position }
 
 
-defaultArray =
-    [ 88, 8, 36, 11, 13, 17, 82, 47 ]
+init : SortingAlgorithm -> ( Model, Cmd Msg )
+init alg =
+    { array = Array.empty
+    , steps = []
+    , history = []
+    , playing = False
+    }
+        ! (Random.int 0 99
+        |> Random.list 15
+        |> Random.generate (ArrayGenerated alg)
+        |> List.singleton)
 
 
-init : ( Model, Cmd Msg )
-init =
-    { array = constructArray <| defaultArray
-    , steps = animToSteps <| sort defaultArray
+init_ : SortingAlgorithm -> List Int -> ( Model, Cmd Msg )
+init_ sort array =
+    { array = constructArray <| array
+    , steps = animToSteps <| sort array
     , history = []
     , playing = False
     }
@@ -191,23 +206,9 @@ backwardTimeline currentAnim prevAnims model =
     }
 
 
-statusToColor : ElementStatus -> String
-statusToColor status =
-    case status of
-        Normal ->
-            "#000"
-
-        LookedAt ->
-            "#2EA336"
-
-
-second ( _, a ) =
-    a
-
-
-setStatusInArray : ElementStatus -> Int -> A.Array Element -> A.Array Element
+setStatusInArray : ElementStatus -> Int -> Array.Array Element -> Array.Array Element
 setStatusInArray status index array =
-    AE.getUnsafe index array
+    ArrayExtra.getUnsafe index array
         |> (\e ->
                 { e
                     | status = status
@@ -224,21 +225,22 @@ setStatusInArray status index array =
                                 e.position
                 }
            )
-        |> \e -> A.set index e array
+        |> \e -> Array.set index e array
 
 
+delayAndStepNext : Cmd Msg
 delayAndStepNext =
     delay (Time.millisecond * 800) NextStep
 
 
-delay : Time -> msg -> Cmd msg
+delay : Time.Time -> msg -> Cmd msg
 delay time msg =
     Process.sleep time
         |> Task.andThen (always <| Task.succeed msg)
         |> Task.perform identity
 
 
-constructArray : List Int -> A.Array Element
+constructArray : List Int -> Array.Array Element
 constructArray numbers =
     let
         l =
@@ -265,7 +267,17 @@ constructArray numbers =
             List.repeat l Normal
     in
         List.map4 Element numbers indices styles colorList
-            |> A.fromList
+            |> Array.fromList
+
+
+exchange : Int -> a -> Int -> a -> Array.Array a -> Array.Array a
+exchange i1 e1 i2 e2 array =
+    Array.set i1 e2 <| Array.set i2 e1 array
+
+
+animToSteps : Animator a ArrayAnimation -> List ArrayAnimation
+animToSteps (Animator ( _, steps )) =
+    steps
 
 
 
@@ -274,8 +286,8 @@ constructArray numbers =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    (A.length model.array)
+    (Array.length model.array)
         - 1
         |> List.range 0
-        |> List.map (\i -> Animation.subscription (Animate i) [ (AE.getUnsafe i model.array).position ])
-        |> batch
+        |> List.map (\i -> Animation.subscription (Animate i) [ (ArrayExtra.getUnsafe i model.array).position ])
+        |> Sub.batch
