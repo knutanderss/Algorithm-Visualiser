@@ -9,3 +9,5 @@ type ArrayAnimation
     = Exchange Int Int
     | LookAt Int
     | UnlookAt Int
+    | Compare Int
+    | CompareOff Int

@@ -83,10 +83,20 @@ step animation model =
 
         LookAt i ->
             { model
-                | array = setStatusInArray LookedAt i model.array
+                | array = setStatusInArray CurrentElement i model.array
             }
 
         UnlookAt i ->
+            { model
+                | array = setStatusInArray Normal i model.array
+            }
+
+        Compare i ->
+            { model
+                | array = setStatusInArray ComparedWith i model.array
+            }
+
+        CompareOff i ->
             { model
                 | array = setStatusInArray Normal i model.array
             }
@@ -103,6 +113,12 @@ flipStep animation =
 
         UnlookAt i ->
             LookAt i
+
+        Compare i ->
+            CompareOff i
+
+        CompareOff i ->
+            Compare i
 
 
 stepExchange : Int -> Int -> Array.Array Element -> Array.Array Element
@@ -143,8 +159,8 @@ updatePositionAnimation e =
 calculateX : Int -> Int
 calculateX =
     SvgArray.View.boxSize
-    + SvgArray.View.boxSpace
-    |> (*)
+        + SvgArray.View.boxSpace
+        |> (*)
 
 
 calculateY : ElementStatus -> Int
@@ -153,8 +169,11 @@ calculateY status =
         Normal ->
             0
 
-        LookedAt ->
+        CurrentElement ->
             30
+
+        ComparedWith ->
+            0
 
 
 getPosition : Element -> Animation.State
@@ -175,9 +194,10 @@ init alg =
     , playing = False
     }
         ! (Random.int 0 99
-        |> Random.list 15
-        |> Random.generate (ArrayGenerated alg)
-        |> List.singleton)
+            |> Random.list 15
+            |> Random.generate (ArrayGenerated alg)
+            |> List.singleton
+          )
 
 
 init_ : SortingAlgorithm -> List Int -> ( Model, Cmd Msg )

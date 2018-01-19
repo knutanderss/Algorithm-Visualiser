@@ -5,8 +5,11 @@ import Sort.Common exposing (..)
 import Array
 import Array.Extra as ArrayExtra
 
+
 jumpStart : Int
-jumpStart = 7
+jumpStart =
+    7
+
 
 sort : List Int -> Animator (Array.Array Int) ArrayAnimation
 sort =
@@ -23,11 +26,13 @@ sort_ index jump ((Animator ( array, steps )) as animator) =
         in
             sort_ (index + 1) jump animUpdated
     else if jump > 1 then
-        let 
-            newJump = jump // 2
+        let
+            newJump =
+                jump // 2
         in
             sort_ newJump newJump animator
-    else animator
+    else
+        animator
 
 
 moveBack : Int -> Int -> Animator (Array.Array Int) ArrayAnimation -> Animator (Array.Array Int) ArrayAnimation
@@ -44,9 +49,12 @@ moveBack i jump ((Animator ( array, steps )) as animator) =
         in
             if currentElem < exchElem then
                 steps
-                    ++ [ Exchange i (i - jump) ]
+                    ++ [ Compare (i - jump), Exchange i (i - jump), CompareOff i ]
                     |> ((,) (exchange i currentElem (i - jump) exchElem array))
                     |> Animator
                     |> moveBack (i - jump) jump
             else
-                unlook i animator
+                animator
+                    |> Sort.Common.compare (i - jump)
+                    |> Sort.Common.compareOff (i - jump)
+                    |> Sort.Common.unlook i

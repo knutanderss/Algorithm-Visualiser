@@ -19,6 +19,16 @@ unlook i (Animator ( array, steps )) =
     Animator ( array, steps ++ [ UnlookAt i ] )
 
 
+compare : Int -> Animator a ArrayAnimation -> Animator a ArrayAnimation
+compare i (Animator ( array, steps )) =
+    Animator ( array, steps ++ [ Compare i ] )
+
+
+compareOff : Int -> Animator a ArrayAnimation -> Animator a ArrayAnimation
+compareOff i (Animator ( array, steps )) =
+    Animator ( array, steps ++ [ CompareOff i ] )
+
+
 animToList : Animator (Array.Array a) ArrayAnimation -> List a
 animToList (Animator ( array, steps )) =
     Array.toList array

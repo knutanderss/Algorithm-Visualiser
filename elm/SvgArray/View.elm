@@ -14,9 +14,10 @@ view : Model -> Html.Html Msg
 view model =
     Html.div []
         [ Svg.svg
-            [
-              "0 0 " ++ svgWidth model ++ " 150"
-              |> viewBox
+            [ "0 0 "
+                ++ svgWidth model
+                ++ " 150"
+                |> viewBox
             ]
             (model.array
                 |> Array.toList
@@ -61,8 +62,11 @@ statusToColor status =
         Normal ->
             "#000"
 
-        LookedAt ->
+        CurrentElement ->
             "#2EA336"
+
+        ComparedWith ->
+            "#CFB63A"
 
 
 boxSize : Int

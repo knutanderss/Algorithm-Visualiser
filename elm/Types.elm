@@ -32,7 +32,9 @@ type alias Element =
 
 type ElementStatus
     = Normal
-    | LookedAt
+    | CurrentElement
+    | ComparedWith
+
 
 type alias SortingAlgorithm =
     List Int -> Animator (Array.Array Int) ArrayAnimation
