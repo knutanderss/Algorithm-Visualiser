@@ -20,3 +20,5 @@ for (var i=0; i < algorithms.length; i++) {
 
   algorithms[i].start(document.getElementById(id));
 }
+
+document.getElementById('back-button').onclick = require('../init.js').back_to_main_menu;

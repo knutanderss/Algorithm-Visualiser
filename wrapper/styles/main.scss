@@ -60,31 +60,44 @@ nav > div {
 header {
   height: 1rem;
   background: #eae6e2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   border-bottom: solid 3px #606060;
+  display: flex;
+  justify-content: center;
+  transition: all 0.3s;
 }
 
 header.active {
   height: 7rem;
-  transition: all 0.3s;
 }
 
-header h1 {
+#header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   opacity: 0;
 }
 
-header h1.active {
+#header-content.active {
   opacity: 1;
   transition: opacity 0.5s;
   transition-delay: 0.3s;
 }
 
-header :first-child {
+#header-content :first-child {
   margin-right: 30px;
 }
 
+#back-button {
+  min-width: 10px;
+  transition: font-size 0.2s;
+  &:hover {
+    font-size: 4em;
+  }
+  &:active {
+    font-size: 3em;
+    transition: font-size 0;
+  }
+}
 
 footer {
   width: 100%;
@@ -112,6 +125,10 @@ footer {
 #content-wrapper {
   margin: 140px auto;
   width: 90%;
+}
+
+#content-wrapper div {
+  padding-bottom: 50px;
 }
 
 #content-wrapper div.inactive {
